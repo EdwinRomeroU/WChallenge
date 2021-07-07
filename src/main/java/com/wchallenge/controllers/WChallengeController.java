@@ -5,10 +5,13 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.wchallenge.models.AlbumModel;
+import com.wchallenge.models.AlbumShareModel;
 import com.wchallenge.models.CommentModel;
 import com.wchallenge.models.PhotoModel;
 import com.wchallenge.models.UserModel;
@@ -59,6 +62,17 @@ public class WChallengeController {
 	@GetMapping("/commentsByUser/{userId}")
 	public List<CommentModel> getPostByUserId(@PathVariable("userId") Integer userId){
 		return wchallengeService.getCommentsByUser(userId);
+	}
+	
+	//Local API Controller
+	@PostMapping("/save")
+	public AlbumShareModel saveAlbumShare(@RequestBody AlbumShareModel albumShare) {
+		return this.wchallengeService.saveAlbumShare(albumShare);
+	}
+	
+	@GetMapping("/albumShare/{idAlbum}/{userGrant}")
+	public List<AlbumShareModel> getAlbumShareByAlbumGrant(@PathVariable("idAlbum") Integer id, @PathVariable("userGrant") String grant){
+		return this.wchallengeService.getAlbumShareByAlbumGrant(id, grant);
 	}
 	
 }

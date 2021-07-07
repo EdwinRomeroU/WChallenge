@@ -2,6 +2,8 @@ package com.wchallenge.services;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -12,10 +14,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import com.wchallenge.models.AlbumModel;
+import com.wchallenge.models.AlbumShareModel;
 import com.wchallenge.models.CommentModel;
 import com.wchallenge.models.PhotoModel;
 import com.wchallenge.models.PostModel;
 import com.wchallenge.models.UserModel;
+import com.wchallenge.repositories.AlbumShareRepository;
 
 @Service
 public class WChallengeService {
@@ -24,6 +28,8 @@ public class WChallengeService {
 	
 	private static String url = "https://jsonplaceholder.typicode.com/";
 			
+	//External API manager
+	
 	@Autowired
 	public WChallengeService(RestTemplateBuilder restTemplateBuilder) {
 		this.restTemplate = restTemplateBuilder.build();
@@ -66,7 +72,6 @@ public class WChallengeService {
 	}
 	
 	public List<PhotoModel> getPhotosByUserId(Integer userId){
-
 		List<PhotoModel> allPhotos = getPhotos();
 		List<AlbumModel> albumsByUser = getAlbumsByUser(userId);
 		List<PhotoModel> photosByUser = new ArrayList<PhotoModel>();
@@ -101,4 +106,49 @@ public class WChallengeService {
 		return commentsByUser;
 	}
 	
+	
+	//Local API Manager
+	
+	@Autowired
+	AlbumShareRepository albumShareRepository;
+	
+	public AlbumShareModel saveAlbumShare(AlbumShareModel albumShare) {
+		/*
+		//Validate Album Exists
+		List<AlbumModel> albums = getAlbums();
+		List<AlbumModel> existAlbum = new ArrayList<>();
+		existAlbum = albums.stream().filter(a -> a.getId().equals(albumShare.getIdAlbum())).collect(Collectors.toList());
+				
+		//Validate Album Exists
+		List<UserModel> users = getUsers();
+		List<UserModel> existUser = new ArrayList<>();
+		existUser = users.stream().filter(a -> a.getId().equals(albumShare.getIdUser())).collect(Collectors.toList());
+				
+		if (existAlbum.isEmpty() || existUser.isEmpty()) {
+			return new AlbumShareModel();
+		}
+		*/
+		return albumShareRepository.save(albumShare);
+	}
+	
+	public Optional<AlbumShareModel> getAlbumShareById(Integer id){
+		return albumShareRepository.findById(id);
+	}
+
+	public List<AlbumShareModel> getAlbumShareByGrant(String userGrant){
+		return albumShareRepository.findByUserGrant(userGrant);
+	}
+	
+	public List<AlbumShareModel> getAlbumShareByUserId(Integer userId){
+		return albumShareRepository.findByIdUser(userId);
+	}
+	
+	public List<AlbumShareModel> getAlbumShareByAlbumId(Integer albumId){
+		return albumShareRepository.findByIdAlbum(albumId);
+	}
+	
+	public List<AlbumShareModel> getAlbumShareByAlbumGrant(Integer albumId, String userGrant){
+		return albumShareRepository.findByIdAlbumAndUserGrant(albumId,userGrant);
+		
+	}
 }
