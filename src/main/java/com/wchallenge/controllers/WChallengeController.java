@@ -45,7 +45,7 @@ public class WChallengeController {
 	}
 	
 	@GetMapping("/comments/{name}")
-	public List<CommentModel> getAlbumsByUserId(@PathVariable("name") String name){
+	public List<CommentModel> getCommentsByName(@PathVariable("name") String name){
 		return wchallengeService.getCommentsByName(name);
 	}
 
@@ -60,7 +60,7 @@ public class WChallengeController {
 	}
 	
 	@GetMapping("/commentsByUser/{userId}")
-	public List<CommentModel> getPostByUserId(@PathVariable("userId") Integer userId){
+	public List<CommentModel> getCommentsByUserId(@PathVariable("userId") Integer userId){
 		return wchallengeService.getCommentsByUser(userId);
 	}
 	
