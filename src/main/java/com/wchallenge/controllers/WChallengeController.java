@@ -70,7 +70,17 @@ public class WChallengeController {
 		return this.wchallengeService.saveAlbumShare(albumShare);
 	}
 	
-	@GetMapping("/albumShare/{idAlbum}/{userGrant}")
+	@GetMapping("/albumShare/{idAlbum}")
+	public List<AlbumShareModel> getAlbumShareByAlbumId(@PathVariable("idAlbum") Integer id){
+		return this.wchallengeService.getAlbumShareByAlbumId(id);
+	}
+	
+	@GetMapping("/userShare/{idUser}")
+	public List<AlbumShareModel> getAlbumShareByUserId(@PathVariable("idUser") Integer id){
+		return this.wchallengeService.getAlbumShareByUserId(id);
+	}
+	
+	@GetMapping("/albumShare/{idAlbum}/userGrant/{userGrant}")
 	public List<AlbumShareModel> getAlbumShareByAlbumGrant(@PathVariable("idAlbum") Integer id, @PathVariable("userGrant") String grant){
 		return this.wchallengeService.getAlbumShareByAlbumGrant(id, grant);
 	}

@@ -46,6 +46,12 @@ public class WChallengeService {
 		return restTemplate.exchange(url+"users/", HttpMethod.GET, null, List.class).getBody();
 	}
 	
+	public List<UserModel> getUsersList(){
+		ResponseEntity<List<UserModel>> responseEntity = restTemplate.exchange(url+"users/", HttpMethod.GET, null, new ParameterizedTypeReference<List<UserModel>>(){});
+		List<UserModel> allUsers = responseEntity.getBody();
+		return allUsers;
+	}
+	
 	public List<CommentModel> getComments(){
 		ResponseEntity<List<CommentModel>> responseEntity = restTemplate.exchange(url+"comments/", HttpMethod.GET, null, new ParameterizedTypeReference<List<CommentModel>>(){});
 		List<CommentModel> allComments = responseEntity.getBody();
@@ -113,21 +119,23 @@ public class WChallengeService {
 	AlbumShareRepository albumShareRepository;
 	
 	public AlbumShareModel saveAlbumShare(AlbumShareModel albumShare) {
-		/*
+		
 		//Validate Album Exists
 		List<AlbumModel> albums = getAlbums();
 		List<AlbumModel> existAlbum = new ArrayList<>();
 		existAlbum = albums.stream().filter(a -> a.getId().equals(albumShare.getIdAlbum())).collect(Collectors.toList());
 				
 		//Validate Album Exists
-		List<UserModel> users = getUsers();
+		List<UserModel> users = getUsersList();
 		List<UserModel> existUser = new ArrayList<>();
 		existUser = users.stream().filter(a -> a.getId().equals(albumShare.getIdUser())).collect(Collectors.toList());
 				
 		if (existAlbum.isEmpty() || existUser.isEmpty()) {
-			return new AlbumShareModel();
+			AlbumShareModel albumShareErr = new AlbumShareModel();
+			albumShareErr.setUserGrant("Datos Inválidos");
+			return albumShareErr;
 		}
-		*/
+		
 		return albumShareRepository.save(albumShare);
 	}
 	
@@ -148,7 +156,12 @@ public class WChallengeService {
 	}
 	
 	public List<AlbumShareModel> getAlbumShareByAlbumGrant(Integer albumId, String userGrant){
-		return albumShareRepository.findByIdAlbumAndUserGrant(albumId,userGrant);
+		if (userGrant.equals(AlbumShareModel.grantREAD) || userGrant.equals(AlbumShareModel.grantWRITE)) {
+			return albumShareRepository.findByIdAlbumAndUserGrant(albumId,userGrant);
+		}
+		else {
+			return new ArrayList<AlbumShareModel>();
+		}
 		
 	}
 }
